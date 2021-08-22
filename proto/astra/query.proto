@@ -1,15 +1,68 @@
 syntax = "proto3";
 package romon267.astra.astra;
 
+import "astra/planet.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
+
 // this line is used by starport scaffolding # 1
+import "astra/shaper.proto";
 
 option go_package = "github.com/romon267/astra/x/astra/types";
 
 // Query defines the gRPC querier service.
 service Query {
     // this line is used by starport scaffolding # 2
+
+	// Queries a shaper by index.
+	rpc Shaper(QueryGetShaperRequest) returns (QueryGetShaperResponse) {
+		option (google.api.http).get = "/astra/shapers/{address}";
+	}
+
+	// Queries a list of shaper items.
+	rpc ShaperAll(QueryAllShaperRequest) returns (QueryAllShaperResponse) {
+		option (google.api.http).get = "/astra/shapers";
+	}
+
+  rpc Planet(QueryGetPlanetRequest) returns (QueryGetPlanetResponse) {
+    option (google.api.http).get = "/astra/planets/{id}";
+  }
+  rpc PlanetAll(QueryAllPlanetRequest) returns (QueryAllPlanetResponse) {
+    option (google.api.http).get = "/astra/planets";
+  }
 }
 
 // this line is used by starport scaffolding # 3
+message QueryGetShaperRequest {
+	string address = 1;
+}
+
+message QueryGetShaperResponse {
+	Shaper Shaper = 1;
+}
+
+message QueryAllShaperRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllShaperResponse {
+	repeated Shaper Shaper = 1;
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetPlanetRequest {
+  string id = 1;
+}
+
+message QueryGetPlanetResponse {
+  Planet Planet = 1;
+}
+
+message QueryAllPlanetRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllPlanetResponse {
+  repeated Planet Planets = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}

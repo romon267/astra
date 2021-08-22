@@ -1,0 +1,11 @@
+syntax = "proto3";
+package romon267.astra.astra;
+
+option go_package = "github.com/romon267/astra/x/astra/types";
+
+message Planet {
+  string id = 1;
+  string creator = 2;
+  string name = 3;
+  string biome = 4;
+}

@@ -6,12 +6,16 @@ package types
 import (
 	context "context"
 	fmt "fmt"
-	_ "github.com/cosmos/cosmos-sdk/types/query"
+	query "github.com/cosmos/cosmos-sdk/types/query"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
+	io "io"
 	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -25,22 +29,422 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// this line is used by starport scaffolding # 3
+type QueryGetShaperRequest struct {
+	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+}
+
+func (m *QueryGetShaperRequest) Reset()         { *m = QueryGetShaperRequest{} }
+func (m *QueryGetShaperRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGetShaperRequest) ProtoMessage()    {}
+func (*QueryGetShaperRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2156006203cbd5e2, []int{0}
+}
+func (m *QueryGetShaperRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetShaperRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetShaperRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetShaperRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetShaperRequest.Merge(m, src)
+}
+func (m *QueryGetShaperRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetShaperRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetShaperRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetShaperRequest proto.InternalMessageInfo
+
+func (m *QueryGetShaperRequest) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+type QueryGetShaperResponse struct {
+	Shaper *Shaper `protobuf:"bytes,1,opt,name=Shaper,proto3" json:"Shaper,omitempty"`
+}
+
+func (m *QueryGetShaperResponse) Reset()         { *m = QueryGetShaperResponse{} }
+func (m *QueryGetShaperResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGetShaperResponse) ProtoMessage()    {}
+func (*QueryGetShaperResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2156006203cbd5e2, []int{1}
+}
+func (m *QueryGetShaperResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetShaperResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetShaperResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetShaperResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetShaperResponse.Merge(m, src)
+}
+func (m *QueryGetShaperResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetShaperResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetShaperResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetShaperResponse proto.InternalMessageInfo
+
+func (m *QueryGetShaperResponse) GetShaper() *Shaper {
+	if m != nil {
+		return m.Shaper
+	}
+	return nil
+}
+
+type QueryAllShaperRequest struct {
+	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryAllShaperRequest) Reset()         { *m = QueryAllShaperRequest{} }
+func (m *QueryAllShaperRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryAllShaperRequest) ProtoMessage()    {}
+func (*QueryAllShaperRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2156006203cbd5e2, []int{2}
+}
+func (m *QueryAllShaperRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryAllShaperRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryAllShaperRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryAllShaperRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllShaperRequest.Merge(m, src)
+}
+func (m *QueryAllShaperRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryAllShaperRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllShaperRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryAllShaperRequest proto.InternalMessageInfo
+
+func (m *QueryAllShaperRequest) GetPagination() *query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryAllShaperResponse struct {
+	Shaper     []*Shaper           `protobuf:"bytes,1,rep,name=Shaper,proto3" json:"Shaper,omitempty"`
+	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryAllShaperResponse) Reset()         { *m = QueryAllShaperResponse{} }
+func (m *QueryAllShaperResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryAllShaperResponse) ProtoMessage()    {}
+func (*QueryAllShaperResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2156006203cbd5e2, []int{3}
+}
+func (m *QueryAllShaperResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryAllShaperResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryAllShaperResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryAllShaperResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllShaperResponse.Merge(m, src)
+}
+func (m *QueryAllShaperResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryAllShaperResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllShaperResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryAllShaperResponse proto.InternalMessageInfo
+
+func (m *QueryAllShaperResponse) GetShaper() []*Shaper {
+	if m != nil {
+		return m.Shaper
+	}
+	return nil
+}
+
+func (m *QueryAllShaperResponse) GetPagination() *query.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryGetPlanetRequest struct {
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (m *QueryGetPlanetRequest) Reset()         { *m = QueryGetPlanetRequest{} }
+func (m *QueryGetPlanetRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGetPlanetRequest) ProtoMessage()    {}
+func (*QueryGetPlanetRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2156006203cbd5e2, []int{4}
+}
+func (m *QueryGetPlanetRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetPlanetRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetPlanetRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetPlanetRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetPlanetRequest.Merge(m, src)
+}
+func (m *QueryGetPlanetRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetPlanetRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetPlanetRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetPlanetRequest proto.InternalMessageInfo
+
+func (m *QueryGetPlanetRequest) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+type QueryGetPlanetResponse struct {
+	Planet *Planet `protobuf:"bytes,1,opt,name=Planet,proto3" json:"Planet,omitempty"`
+}
+
+func (m *QueryGetPlanetResponse) Reset()         { *m = QueryGetPlanetResponse{} }
+func (m *QueryGetPlanetResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGetPlanetResponse) ProtoMessage()    {}
+func (*QueryGetPlanetResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2156006203cbd5e2, []int{5}
+}
+func (m *QueryGetPlanetResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetPlanetResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetPlanetResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetPlanetResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetPlanetResponse.Merge(m, src)
+}
+func (m *QueryGetPlanetResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetPlanetResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetPlanetResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetPlanetResponse proto.InternalMessageInfo
+
+func (m *QueryGetPlanetResponse) GetPlanet() *Planet {
+	if m != nil {
+		return m.Planet
+	}
+	return nil
+}
+
+type QueryAllPlanetRequest struct {
+	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryAllPlanetRequest) Reset()         { *m = QueryAllPlanetRequest{} }
+func (m *QueryAllPlanetRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryAllPlanetRequest) ProtoMessage()    {}
+func (*QueryAllPlanetRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2156006203cbd5e2, []int{6}
+}
+func (m *QueryAllPlanetRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryAllPlanetRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryAllPlanetRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryAllPlanetRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllPlanetRequest.Merge(m, src)
+}
+func (m *QueryAllPlanetRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryAllPlanetRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllPlanetRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryAllPlanetRequest proto.InternalMessageInfo
+
+func (m *QueryAllPlanetRequest) GetPagination() *query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryAllPlanetResponse struct {
+	Planets    []*Planet           `protobuf:"bytes,1,rep,name=Planets,proto3" json:"Planets,omitempty"`
+	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryAllPlanetResponse) Reset()         { *m = QueryAllPlanetResponse{} }
+func (m *QueryAllPlanetResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryAllPlanetResponse) ProtoMessage()    {}
+func (*QueryAllPlanetResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2156006203cbd5e2, []int{7}
+}
+func (m *QueryAllPlanetResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryAllPlanetResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryAllPlanetResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryAllPlanetResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllPlanetResponse.Merge(m, src)
+}
+func (m *QueryAllPlanetResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryAllPlanetResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllPlanetResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryAllPlanetResponse proto.InternalMessageInfo
+
+func (m *QueryAllPlanetResponse) GetPlanets() []*Planet {
+	if m != nil {
+		return m.Planets
+	}
+	return nil
+}
+
+func (m *QueryAllPlanetResponse) GetPagination() *query.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+func init() {
+	proto.RegisterType((*QueryGetShaperRequest)(nil), "romon267.astra.astra.QueryGetShaperRequest")
+	proto.RegisterType((*QueryGetShaperResponse)(nil), "romon267.astra.astra.QueryGetShaperResponse")
+	proto.RegisterType((*QueryAllShaperRequest)(nil), "romon267.astra.astra.QueryAllShaperRequest")
+	proto.RegisterType((*QueryAllShaperResponse)(nil), "romon267.astra.astra.QueryAllShaperResponse")
+	proto.RegisterType((*QueryGetPlanetRequest)(nil), "romon267.astra.astra.QueryGetPlanetRequest")
+	proto.RegisterType((*QueryGetPlanetResponse)(nil), "romon267.astra.astra.QueryGetPlanetResponse")
+	proto.RegisterType((*QueryAllPlanetRequest)(nil), "romon267.astra.astra.QueryAllPlanetRequest")
+	proto.RegisterType((*QueryAllPlanetResponse)(nil), "romon267.astra.astra.QueryAllPlanetResponse")
+}
+
 func init() { proto.RegisterFile("astra/query.proto", fileDescriptor_2156006203cbd5e2) }
 
 var fileDescriptor_2156006203cbd5e2 = []byte{
-	// 182 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x4c, 0x2c, 0x2e, 0x29,
-	0x4a, 0xd4, 0x2f, 0x2c, 0x4d, 0x2d, 0xaa, 0xd4, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x29,
-	0xca, 0xcf, 0xcd, 0xcf, 0x33, 0x32, 0x33, 0xd7, 0x03, 0xcb, 0x41, 0x48, 0x29, 0x99, 0xf4, 0xfc,
-	0xfc, 0xf4, 0x9c, 0x54, 0xfd, 0xc4, 0x82, 0x4c, 0xfd, 0xc4, 0xbc, 0xbc, 0xfc, 0x92, 0xc4, 0x92,
-	0xcc, 0xfc, 0xbc, 0x62, 0x88, 0x1e, 0x29, 0xad, 0xe4, 0xfc, 0xe2, 0xdc, 0xfc, 0x62, 0xfd, 0xa4,
-	0xc4, 0xe2, 0x54, 0x88, 0x61, 0xfa, 0x65, 0x86, 0x49, 0xa9, 0x25, 0x89, 0x86, 0xfa, 0x05, 0x89,
-	0xe9, 0x99, 0x79, 0x60, 0xc5, 0x10, 0xb5, 0x46, 0xec, 0x5c, 0xac, 0x81, 0x20, 0x15, 0x4e, 0x8e,
-	0x27, 0x1e, 0xc9, 0x31, 0x5e, 0x78, 0x24, 0xc7, 0xf8, 0xe0, 0x91, 0x1c, 0xe3, 0x84, 0xc7, 0x72,
-	0x0c, 0x17, 0x1e, 0xcb, 0x31, 0xdc, 0x78, 0x2c, 0xc7, 0x10, 0xa5, 0x9e, 0x9e, 0x59, 0x92, 0x51,
-	0x9a, 0xa4, 0x97, 0x9c, 0x9f, 0xab, 0x0f, 0x73, 0x8d, 0x3e, 0xc4, 0xa5, 0x15, 0x50, 0xba, 0xa4,
-	0xb2, 0x20, 0xb5, 0x38, 0x89, 0x0d, 0x6c, 0xa4, 0x31, 0x20, 0x00, 0x00, 0xff, 0xff, 0x8b, 0x13,
-	0x92, 0xaa, 0xc7, 0x00, 0x00, 0x00,
+	// 509 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x94, 0x4f, 0x8b, 0xd3, 0x40,
+	0x18, 0xc6, 0x3b, 0x51, 0x77, 0xd9, 0x11, 0x16, 0x1d, 0xdd, 0xa5, 0xc4, 0x25, 0x2c, 0x39, 0x58,
+	0x51, 0x99, 0xa1, 0x55, 0xd6, 0x73, 0x3d, 0xb8, 0x37, 0x59, 0xeb, 0xcd, 0x8b, 0x4c, 0x36, 0x43,
+	0x36, 0x90, 0x66, 0xb2, 0x99, 0xa9, 0xb8, 0x2c, 0x8a, 0x08, 0xde, 0x45, 0x0f, 0xe2, 0x37, 0xf2,
+	0xb8, 0xe0, 0xc5, 0xa3, 0xb4, 0x7e, 0x10, 0xe9, 0xcc, 0x1b, 0x9a, 0xb4, 0x21, 0xcd, 0xa1, 0x97,
+	0x96, 0xbc, 0x79, 0x9e, 0xbc, 0xbf, 0xf7, 0x99, 0x3f, 0xf8, 0x36, 0x57, 0x3a, 0xe7, 0xec, 0x7c,
+	0x22, 0xf2, 0x0b, 0x9a, 0xe5, 0x52, 0x4b, 0x72, 0x37, 0x97, 0x63, 0x99, 0x0e, 0x8e, 0x9e, 0x51,
+	0xf3, 0xce, 0xfe, 0xba, 0xc4, 0x0a, 0xb3, 0x84, 0xa7, 0x42, 0x5b, 0xa5, 0x7b, 0x10, 0x49, 0x19,
+	0x25, 0x82, 0xf1, 0x2c, 0x66, 0x3c, 0x4d, 0xa5, 0xe6, 0x3a, 0x96, 0xa9, 0x82, 0xb7, 0x0f, 0x4f,
+	0xa5, 0x1a, 0x4b, 0xc5, 0x02, 0xae, 0x84, 0x6d, 0xc0, 0xde, 0xf5, 0x03, 0xa1, 0x79, 0x9f, 0x65,
+	0x3c, 0x8a, 0x53, 0x23, 0x06, 0x2d, 0x7c, 0x5d, 0x9d, 0xf1, 0x4c, 0xe4, 0xb6, 0xe6, 0xf7, 0xf1,
+	0xde, 0xab, 0xb9, 0xeb, 0x58, 0xe8, 0xd7, 0xa6, 0x3e, 0x12, 0xe7, 0x13, 0xa1, 0x34, 0xe9, 0xe2,
+	0x6d, 0x1e, 0x86, 0xb9, 0x50, 0xaa, 0x8b, 0x0e, 0xd1, 0x83, 0x9d, 0x51, 0xf1, 0xe8, 0xbf, 0xc4,
+	0xfb, 0xcb, 0x16, 0x95, 0xc9, 0x54, 0x09, 0xf2, 0x14, 0x6f, 0xd9, 0x8a, 0xb1, 0xdc, 0x1c, 0x1c,
+	0xd0, 0xba, 0x29, 0x29, 0xb8, 0x40, 0xeb, 0xbf, 0x05, 0x84, 0x61, 0x92, 0x54, 0x11, 0x5e, 0x60,
+	0xbc, 0x98, 0x01, 0x3e, 0x79, 0x9f, 0xda, 0x81, 0xe9, 0x7c, 0x60, 0x6a, 0x13, 0x85, 0x81, 0xe9,
+	0x09, 0x8f, 0x04, 0x78, 0x47, 0x25, 0xa7, 0xff, 0x03, 0x01, 0x71, 0xa9, 0x43, 0x0d, 0xf1, 0xb5,
+	0xb6, 0xc4, 0xe4, 0xb8, 0x02, 0xe6, 0x18, 0xb0, 0xde, 0x5a, 0x30, 0xdb, 0xb2, 0x42, 0xd6, 0x5b,
+	0xa4, 0x7f, 0x62, 0xd6, 0xbc, 0x18, 0x7d, 0x17, 0x3b, 0x71, 0x08, 0xc1, 0x3b, 0x71, 0x58, 0xce,
+	0xbc, 0x10, 0x2e, 0x26, 0xb0, 0x95, 0xe6, 0xcc, 0xc1, 0x05, 0xda, 0x72, 0xe6, 0xd5, 0xc6, 0x9b,
+	0xca, 0xfc, 0x67, 0x29, 0xf3, 0x25, 0xe2, 0x23, 0xbc, 0x6d, 0x2b, 0xaa, 0x39, 0x74, 0xb0, 0x15,
+	0xe2, 0x8d, 0xa5, 0x3e, 0xf8, 0x76, 0x1d, 0xdf, 0x30, 0x6c, 0xe4, 0x0b, 0x2a, 0xd6, 0x9f, 0x3c,
+	0xaa, 0x87, 0xa8, 0x3d, 0x1c, 0xee, 0xe3, 0x76, 0x62, 0xdb, 0xdb, 0x3f, 0xfc, 0xfc, 0xfb, 0xdf,
+	0x77, 0xc7, 0x25, 0x5d, 0x56, 0x3e, 0x80, 0x8a, 0x5d, 0xc2, 0x89, 0xfa, 0x40, 0x3e, 0xe2, 0x1d,
+	0xeb, 0x19, 0x26, 0x49, 0x23, 0xc9, 0xf2, 0x19, 0x69, 0x24, 0x59, 0xd9, 0xee, 0xfe, 0xbe, 0x21,
+	0xb9, 0x45, 0x76, 0xab, 0x24, 0xe4, 0x13, 0x2a, 0x76, 0xd1, 0xba, 0x1c, 0x2a, 0xbb, 0x65, 0x5d,
+	0x0e, 0xd5, 0x85, 0xf7, 0xef, 0x99, 0xee, 0x7b, 0xe4, 0x0e, 0x2b, 0x5f, 0x73, 0x8a, 0x5d, 0xc6,
+	0xa1, 0x89, 0xc0, 0xca, 0x5b, 0x44, 0xd0, 0x1e, 0x62, 0x65, 0xf7, 0xad, 0x44, 0x00, 0x10, 0xcf,
+	0x87, 0xbf, 0xa6, 0x1e, 0xba, 0x9a, 0x7a, 0xe8, 0xef, 0xd4, 0x43, 0x5f, 0x67, 0x5e, 0xe7, 0x6a,
+	0xe6, 0x75, 0xfe, 0xcc, 0xbc, 0xce, 0x9b, 0x5e, 0x14, 0xeb, 0xb3, 0x49, 0x40, 0x4f, 0xe5, 0x98,
+	0x15, 0x9d, 0xc0, 0xfc, 0x1e, 0xfe, 0xf5, 0x45, 0x26, 0x54, 0xb0, 0x65, 0xae, 0xd4, 0x27, 0xff,
+	0x03, 0x00, 0x00, 0xff, 0xff, 0xa2, 0x15, 0x9b, 0xee, 0xef, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -55,6 +459,12 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
+	// Queries a shaper by index.
+	Shaper(ctx context.Context, in *QueryGetShaperRequest, opts ...grpc.CallOption) (*QueryGetShaperResponse, error)
+	// Queries a list of shaper items.
+	ShaperAll(ctx context.Context, in *QueryAllShaperRequest, opts ...grpc.CallOption) (*QueryAllShaperResponse, error)
+	Planet(ctx context.Context, in *QueryGetPlanetRequest, opts ...grpc.CallOption) (*QueryGetPlanetResponse, error)
+	PlanetAll(ctx context.Context, in *QueryAllPlanetRequest, opts ...grpc.CallOption) (*QueryAllPlanetResponse, error)
 }
 
 type queryClient struct {
@@ -65,22 +475,1430 @@ func NewQueryClient(cc grpc1.ClientConn) QueryClient {
 	return &queryClient{cc}
 }
 
+func (c *queryClient) Shaper(ctx context.Context, in *QueryGetShaperRequest, opts ...grpc.CallOption) (*QueryGetShaperResponse, error) {
+	out := new(QueryGetShaperResponse)
+	err := c.cc.Invoke(ctx, "/romon267.astra.astra.Query/Shaper", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) ShaperAll(ctx context.Context, in *QueryAllShaperRequest, opts ...grpc.CallOption) (*QueryAllShaperResponse, error) {
+	out := new(QueryAllShaperResponse)
+	err := c.cc.Invoke(ctx, "/romon267.astra.astra.Query/ShaperAll", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) Planet(ctx context.Context, in *QueryGetPlanetRequest, opts ...grpc.CallOption) (*QueryGetPlanetResponse, error) {
+	out := new(QueryGetPlanetResponse)
+	err := c.cc.Invoke(ctx, "/romon267.astra.astra.Query/Planet", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) PlanetAll(ctx context.Context, in *QueryAllPlanetRequest, opts ...grpc.CallOption) (*QueryAllPlanetResponse, error) {
+	out := new(QueryAllPlanetResponse)
+	err := c.cc.Invoke(ctx, "/romon267.astra.astra.Query/PlanetAll", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
+	// Queries a shaper by index.
+	Shaper(context.Context, *QueryGetShaperRequest) (*QueryGetShaperResponse, error)
+	// Queries a list of shaper items.
+	ShaperAll(context.Context, *QueryAllShaperRequest) (*QueryAllShaperResponse, error)
+	Planet(context.Context, *QueryGetPlanetRequest) (*QueryGetPlanetResponse, error)
+	PlanetAll(context.Context, *QueryAllPlanetRequest) (*QueryAllPlanetResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
 type UnimplementedQueryServer struct {
 }
 
+func (*UnimplementedQueryServer) Shaper(ctx context.Context, req *QueryGetShaperRequest) (*QueryGetShaperResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Shaper not implemented")
+}
+func (*UnimplementedQueryServer) ShaperAll(ctx context.Context, req *QueryAllShaperRequest) (*QueryAllShaperResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ShaperAll not implemented")
+}
+func (*UnimplementedQueryServer) Planet(ctx context.Context, req *QueryGetPlanetRequest) (*QueryGetPlanetResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Planet not implemented")
+}
+func (*UnimplementedQueryServer) PlanetAll(ctx context.Context, req *QueryAllPlanetRequest) (*QueryAllPlanetResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PlanetAll not implemented")
+}
+
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
 	s.RegisterService(&_Query_serviceDesc, srv)
+}
+
+func _Query_Shaper_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetShaperRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Shaper(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/romon267.astra.astra.Query/Shaper",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Shaper(ctx, req.(*QueryGetShaperRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_ShaperAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAllShaperRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ShaperAll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/romon267.astra.astra.Query/ShaperAll",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ShaperAll(ctx, req.(*QueryAllShaperRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Planet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetPlanetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Planet(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/romon267.astra.astra.Query/Planet",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Planet(ctx, req.(*QueryGetPlanetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_PlanetAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAllPlanetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).PlanetAll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/romon267.astra.astra.Query/PlanetAll",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).PlanetAll(ctx, req.(*QueryAllPlanetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "romon267.astra.astra.Query",
 	HandlerType: (*QueryServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams:     []grpc.StreamDesc{},
-	Metadata:    "astra/query.proto",
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Shaper",
+			Handler:    _Query_Shaper_Handler,
+		},
+		{
+			MethodName: "ShaperAll",
+			Handler:    _Query_ShaperAll_Handler,
+		},
+		{
+			MethodName: "Planet",
+			Handler:    _Query_Planet_Handler,
+		},
+		{
+			MethodName: "PlanetAll",
+			Handler:    _Query_PlanetAll_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "astra/query.proto",
 }
+
+func (m *QueryGetShaperRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetShaperRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetShaperRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGetShaperResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetShaperResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetShaperResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Shaper != nil {
+		{
+			size, err := m.Shaper.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryAllShaperRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryAllShaperRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryAllShaperRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryAllShaperResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryAllShaperResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryAllShaperResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Shaper) > 0 {
+		for iNdEx := len(m.Shaper) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Shaper[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGetPlanetRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetPlanetRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetPlanetRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGetPlanetResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetPlanetResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetPlanetResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Planet != nil {
+		{
+			size, err := m.Planet.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryAllPlanetRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryAllPlanetRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryAllPlanetRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryAllPlanetResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryAllPlanetResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryAllPlanetResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Planets) > 0 {
+		for iNdEx := len(m.Planets) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Planets[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
+	offset -= sovQuery(v)
+	base := offset
+	for v >= 1<<7 {
+		dAtA[offset] = uint8(v&0x7f | 0x80)
+		v >>= 7
+		offset++
+	}
+	dAtA[offset] = uint8(v)
+	return base
+}
+func (m *QueryGetShaperRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGetShaperResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Shaper != nil {
+		l = m.Shaper.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryAllShaperRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryAllShaperResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Shaper) > 0 {
+		for _, e := range m.Shaper {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGetPlanetRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGetPlanetResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Planet != nil {
+		l = m.Planet.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryAllPlanetRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryAllPlanetResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Planets) > 0 {
+		for _, e := range m.Planets {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func sovQuery(x uint64) (n int) {
+	return (math_bits.Len64(x|1) + 6) / 7
+}
+func sozQuery(x uint64) (n int) {
+	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *QueryGetShaperRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetShaperRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetShaperRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetShaperResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetShaperResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetShaperResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Shaper", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Shaper == nil {
+				m.Shaper = &Shaper{}
+			}
+			if err := m.Shaper.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryAllShaperRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryAllShaperRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryAllShaperRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryAllShaperResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryAllShaperResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryAllShaperResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Shaper", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Shaper = append(m.Shaper, &Shaper{})
+			if err := m.Shaper[len(m.Shaper)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetPlanetRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetPlanetRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetPlanetRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetPlanetResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetPlanetResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetPlanetResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Planet", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Planet == nil {
+				m.Planet = &Planet{}
+			}
+			if err := m.Planet.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryAllPlanetRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryAllPlanetRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryAllPlanetRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryAllPlanetResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryAllPlanetResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryAllPlanetResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Planets", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Planets = append(m.Planets, &Planet{})
+			if err := m.Planets[len(m.Planets)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func skipQuery(dAtA []byte) (n int, err error) {
+	l := len(dAtA)
+	iNdEx := 0
+	depth := 0
+	for iNdEx < l {
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return 0, ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return 0, io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		wireType := int(wire & 0x7)
+		switch wireType {
+		case 0:
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				iNdEx++
+				if dAtA[iNdEx-1] < 0x80 {
+					break
+				}
+			}
+		case 1:
+			iNdEx += 8
+		case 2:
+			var length int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				length |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if length < 0 {
+				return 0, ErrInvalidLengthQuery
+			}
+			iNdEx += length
+		case 3:
+			depth++
+		case 4:
+			if depth == 0 {
+				return 0, ErrUnexpectedEndOfGroupQuery
+			}
+			depth--
+		case 5:
+			iNdEx += 4
+		default:
+			return 0, fmt.Errorf("proto: illegal wireType %d", wireType)
+		}
+		if iNdEx < 0 {
+			return 0, ErrInvalidLengthQuery
+		}
+		if depth == 0 {
+			return iNdEx, nil
+		}
+	}
+	return 0, io.ErrUnexpectedEOF
+}
+
+var (
+	ErrInvalidLengthQuery        = fmt.Errorf("proto: negative length found during unmarshaling")
+	ErrIntOverflowQuery          = fmt.Errorf("proto: integer overflow")
+	ErrUnexpectedEndOfGroupQuery = fmt.Errorf("proto: unexpected end of group")
+)

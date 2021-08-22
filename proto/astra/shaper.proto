@@ -1,0 +1,16 @@
+syntax = "proto3";
+package romon267.astra.astra;
+
+option go_package = "github.com/romon267/astra/x/astra/types";
+
+import "gogoproto/gogo.proto";
+
+message Shaper {
+  string creator = 1;
+//  string index = 2;
+  string name = 2;
+  string address = 3;
+  string rank = 4;
+  repeated int64 planetIds = 5;
+  repeated int64 starIds = 6;
+}

@@ -16,6 +16,10 @@ const (
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_astra"
 
+	PlanetKey = "Planet-"
+
+	PlanetCountKey = "PlanetCount-"
+
 	// this line is used by starport scaffolding # ibc/keys/name
 )
 
@@ -24,3 +28,7 @@ const (
 func KeyPrefix(p string) []byte {
 	return []byte(p)
 }
+
+const (
+	ShaperKey = "Shaper-value-"
+)

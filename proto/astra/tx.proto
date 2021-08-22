@@ -2,12 +2,61 @@ syntax = "proto3";
 package romon267.astra.astra;
 
 // this line is used by starport scaffolding # proto/tx/import
+import "astra/shaper.proto";
 
 option go_package = "github.com/romon267/astra/x/astra/types";
 
 // Msg defines the Msg service.
 service Msg {
     // this line is used by starport scaffolding # proto/tx/rpc
+  rpc CreateShaper(MsgCreateShaper) returns (MsgCreateShaperResponse);
+  rpc UpdateShaper(MsgUpdateShaper) returns (MsgUpdateShaperResponse);
+  rpc UpdateShaperPlanets(MsgUpdateShaperPlanets) returns (MsgUpdateShaperPlanetsResponse);
+  rpc DeleteShaper(MsgDeleteShaper) returns (MsgDeleteShaperResponse);
+  rpc CreatePlanet(MsgCreatePlanet) returns (MsgCreatePlanetResponse);
 }
 
+message MsgUpdateShaperPlanets {
+  string creator = 1;
+  string address = 2;
+  repeated int64 planetIds = 3;
+}
+
+message MsgUpdateShaperPlanetsResponse { }
+
 // this line is used by starport scaffolding # proto/tx/message
+message MsgCreateShaper {
+  string creator = 1;
+//  string index = 2;
+  string name = 3;
+  string address = 4;
+  string rank = 5;
+//  repeated int64 planetIds = 6;
+}
+message MsgCreateShaperResponse { }
+
+message MsgUpdateShaper {
+  string creator = 1;
+//  string id = 2;
+  string name = 2;
+  string address = 3;
+  string rank = 4;
+  repeated int64 planetIds = 5;
+  repeated int64 starIds = 6;
+}
+message MsgUpdateShaperResponse { }
+
+message MsgDeleteShaper {
+  string creator = 1;
+  string address = 2;
+}
+message MsgDeleteShaperResponse { }
+
+message MsgCreatePlanet {
+  string creator = 1;
+  string name = 2;
+  string biome = 3;
+}
+
+message MsgCreatePlanetResponse {
+}

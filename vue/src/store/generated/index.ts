@@ -14,6 +14,8 @@ import CosmosCosmosSdkIbcApplicationsTransferV1 from './cosmos/cosmos-sdk/ibc.ap
 import CosmosCosmosSdkIbcCoreChannelV1 from './cosmos/cosmos-sdk/ibc.core.channel.v1'
 import CosmosCosmosSdkIbcCoreClientV1 from './cosmos/cosmos-sdk/ibc.core.client.v1'
 import CosmosCosmosSdkIbcCoreConnectionV1 from './cosmos/cosmos-sdk/ibc.core.connection.v1'
+import Romon267AstraExampleBlogBlog from './romon267/astra/example.blog.blog'
+import Romon267AstraRomon267AstraAstra from './romon267/astra/romon267.astra.astra'
 
 
 export default { 
@@ -31,6 +33,8 @@ export default {
   CosmosCosmosSdkIbcCoreChannelV1: load(CosmosCosmosSdkIbcCoreChannelV1, 'ibc.core.channel.v1'),
   CosmosCosmosSdkIbcCoreClientV1: load(CosmosCosmosSdkIbcCoreClientV1, 'ibc.core.client.v1'),
   CosmosCosmosSdkIbcCoreConnectionV1: load(CosmosCosmosSdkIbcCoreConnectionV1, 'ibc.core.connection.v1'),
+  Romon267AstraExampleBlogBlog: load(Romon267AstraExampleBlogBlog, 'example.blog.blog'),
+  Romon267AstraRomon267AstraAstra: load(Romon267AstraRomon267AstraAstra, 'romon267.astra.astra'),
   
 }
 
